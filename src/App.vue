@@ -15,21 +15,6 @@ export default {
     AppHeader,
     AppHero
   },
-  created() {
-    this.getData();
-
-  },
-  methods: {
-    getData() {
-      Promise.all([
-        axios.get('http://127.0.0.1:8000/api/userslist'),
-        axios.get('http://127.0.0.1:8000/api/types')
-      ]).then(resp=>{
-        this.restaurants = resp[0].data.results;
-        this.types = resp[1].data.results;
-      })
-    }
-  }
 };
 
 </script>
@@ -41,16 +26,7 @@ export default {
   <!-- hero -->
   <AppHero/>
 
-  <!-- main -->
-  <div>
-    <ul v-for="restaurant in restaurants" :key="restaurant.id">
-      <li>{{ restaurant.name }}
-        <ul>
-          <li v-for="product in restaurant.products">{{ product.name }}</li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+  <router-view></router-view>
 
 
 </template>
