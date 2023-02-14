@@ -20,6 +20,9 @@ export default{
                     <li class="nav-item ms-3">
                         <a class="nav-link active" aria-current="page" href="http://127.0.0.1:8000/">Accedi</a>
                     </li>
+                    <li class="nav-item ms-3">
+                        <router-link class="nav-link" aria-current="page" :to="{ name: 'Checkout' }">Carrello</router-link>
+                    </li>
                 </ul>
             </div>
         </div>
