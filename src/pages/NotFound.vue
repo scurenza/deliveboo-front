@@ -1,9 +1,9 @@
 <script>
 export default {
   name: 'NotFound',
-  mounted(){
-    this.$router.push({name:'home'})
-  }
+  // mounted(){
+  //   this.$router.push({name:'home'})
+  // }
 };
 </script>
 

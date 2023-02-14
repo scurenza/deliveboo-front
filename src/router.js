@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "./pages/HomePage.vue";
 import CategoryPage from "./pages/CategoryPage.vue";
-// import NotFound from "./pages/NotFound.vue";
+import NotFound from "./pages/NotFound.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -16,11 +16,11 @@ const router = createRouter({
             name: "singlePage",
             component: CategoryPage
         },
-        // {
-        //     path: "/:pathMatch(.*)*",
-        //     name: "notFound",
-        //     component: NotFound
-        // }
+        {
+            path: "/:pathMatch(.*)*",
+            name: "notFound",
+            component: NotFound
+        }
     ],
 })
 
