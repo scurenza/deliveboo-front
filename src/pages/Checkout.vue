@@ -1,4 +1,5 @@
 <script>
+    import moment from 'moment';
     import axios from 'axios';
 import { store } from '../store';
     export default {
@@ -6,7 +7,12 @@ import { store } from '../store';
         data() {
             return {
                 store,
-                loading: true
+                loading: true,
+                name: '',
+                last_name: '',
+                email: '',
+                phone_number: '',
+                address: ''
             }
         },
         computed: {
@@ -23,9 +29,23 @@ import { store } from '../store';
                     return rest;
                 })
                 console.log(bodyPost);
+                // let number = null;
+                // if(!Number.parseInt(this.phone_number)){
+
+                // }
+
+                    // const date = new Date();
+                let date = moment().format('YYYY-MM-DD')
+
                 const bodyRequest = {
-                    name: "Federico",
-                    email: "federico@mail.it",
+                    name: this.name,
+                    last_name: this.last_name,
+                    email: this.email,
+                    phone_number: this.phone_number,
+                    address: this.address,
+                    amount: this.getTotal,
+                    success: true,
+                    date: date,
                     products: bodyPost
                 }
                 this.loading = false;
@@ -34,7 +54,11 @@ import { store } from '../store';
                         console.log(resp);
                         this.loading = true;
                     })
+                console.log(bodyRequest);
                 
+            },
+            handleNumberChange(){
+
             }
         }
     }
@@ -70,8 +94,35 @@ import { store } from '../store';
     </tr>
   </tbody>
 </table>
-<div class="d-flex justify-content-end">
 
+<div class="container">
+    <form>
+        <div class="mb-3">
+            <label for="name" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="name" v-model="name">
+        </div>
+        <div class="mb-3">  
+            <label for="last_name" class="form-label">Cognome</label>
+            <input type="text" class="form-control" id="last_name" v-model="last_name">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" v-model="email">
+        </div>
+        <div class="mb-3">
+            <label for="phone_number" class="form-label">Numero</label>
+            <input type="number" class="form-control" id="phone_number" v-model="phone_number">
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" v-model="address">
+        </div>
+    </form>
+
+</div>
+
+
+<div class="d-flex justify-content-end">
     <button @click="checkout()" :disabled="!loading" class="btn btn-primary ms_checkout">Vai al checkout</button>
 </div>
 </div>
@@ -86,5 +137,15 @@ img {
     opacity: 0.5;
     cursor: not-allowed;
 }
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
 </style>
