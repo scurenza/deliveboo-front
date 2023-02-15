@@ -7,7 +7,8 @@ export default {
   data() {
     return {
       restaurants: [],
-      types: []
+      types: [],
+      urlApi: 'api/filtercategories'
     }
   },
   components:{
@@ -24,17 +25,51 @@ export default {
         axios.get('http://127.0.0.1:8000/api/types')
       ]).then(resp=>{
         this.restaurants = resp[0].data.results;
-        this.types = resp[1].data.results;
+        this.types = resp[1].data.results.map(item => {
+          return {
+            ...item,active: false
+          }
+        })
       })
     },
-    HandleCategoryClick(name) {
-      axios.get(`http://127.0.0.1:8000/api/types/${name}`).then(resp =>{
+    HandleCategoryClick(name, id) {
+      this.types = this.types.map(item => {
+        if(item.id === id){
+          return {
+            ...item,active:!item.active
+          }
+        }
+        return item;
+      })
+
+      // let query = '';
+      // this.types.forEach(el => {
+      //   if(el.active){
+      //     query += el.name; 
+      //   }
+      // });
+
+
+      let query = [];
+      this.types.forEach(el => {
+        if(el.active){
+          query.push(el.name.toLowerCase()); 
+        }
+      });
+
+      const queryString = query.join(',')
+      console.log(queryString);
+
+      const urlUpdate = queryString.length > 0 ? `http://127.0.0.1:8000/${this.urlApi}?type=${queryString}` : 'http://127.0.0.1:8000/api/userslist';
+    
+      axios.get(urlUpdate).then(resp =>{
         console.log(resp.data.results);
-        console.log(resp.data.results[0].types);
         this.restaurants = resp.data.results;
       })
 
-    }
+
+    },
+    
   }
 };
 
@@ -47,7 +82,7 @@ export default {
   <!-- types -->
   <div class="container">
     <ul class="list-group list-group-horizontal">
-      <li @click="HandleCategoryClick(singletype.name)" class="list-group-item my-4" v-for="singletype in types" :key="singletype.id">
+      <li @click="HandleCategoryClick(singletype.name, singletype.id)" :class="singletype.active ? 'bg-primary' : ''" class="list-group-item my-4" v-for="singletype in types" :key="singletype.id">
         {{ singletype.name }}
       </li>
     </ul>
