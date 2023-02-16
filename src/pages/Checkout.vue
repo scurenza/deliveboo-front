@@ -17,9 +17,11 @@ import { store } from '../store';
         },
         computed: {
             getTotal() {
-                return this.store.shoppingCart.reduce((tot, current) => {
+                const total = this.store.shoppingCart.reduce((tot, current) => {
                     return tot + current.price*current.quantity;
+
                 }, 0)
+                return total.toFixed(2);
             }
         },
         methods: {
@@ -57,8 +59,33 @@ import { store } from '../store';
                 console.log(bodyRequest);
                 
             },
-            handleNumberChange(){
 
+            incrementQuantity(id){
+                this.store.shoppingCart = this.store.shoppingCart.map(el=> {
+                    if (el.id === id) {
+                        return { ...el, quantity: el.quantity+1 }
+                    }
+                    return el; 
+                })
+                localStorage.setItem("carrello",JSON.stringify(this.store.shoppingCart));
+            },
+            decrementQuantity(id){
+                this.store.shoppingCart = this.store.shoppingCart.reduce((tot,current) => {
+                    if(current.id === id){
+                        if (current.quantity > 1) {
+                            tot.push({...current,quantity: current.quantity-1})
+                        }
+                    } else {
+                        tot.push(current)
+                    }
+                    return tot;
+                },[])
+                localStorage.setItem("carrello",JSON.stringify(this.store.shoppingCart));
+            },
+            deleteProductFromCart(id){
+                this.store.shoppingCart = this.store.shoppingCart.filter((el) => el.id !== id);
+                localStorage.setItem("carrello",JSON.stringify(this.store.shoppingCart));
+                console.log(this.store.shoppingCart);
             }
         }
     }
@@ -86,7 +113,13 @@ import { store } from '../store';
       </td>
       <td>{{ product.name }}</td>
       <td>{{ product.price }} €</td>
-      <td>{{ product.quantity }}</td>
+      <td class="d-flex align-items-center">{{ product.quantity }} 
+        <div class="ms-4">
+            <button @click="incrementQuantity(product.id)" class="btn btn-info">+</button>
+            <button @click="decrementQuantity(product.id)" class="btn btn-info">-</button>
+        </div>
+        <button @click="deleteProductFromCart(product.id)" class="btn btn-danger">Elimina</button>
+    </td>
     </tr>
     <tr>
         <td colspan="3"></td>
