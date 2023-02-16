@@ -95,9 +95,9 @@ export default {
           <img :src="` http://127.0.0.1:8000/storage/${restaurant.img} `" class="card-img-top" alt="">
           <div class="card-body">
             <h5 class="card-title">{{ restaurant.name }}</h5>
-            <p class="card-text">Tipologie:
+            <p class="card-text">Tipologie: <br>
               <span v-for="singleType in restaurant.types">
-                {{ singleType.name }}
+                {{ singleType.name }} <br>
               </span>
             </p>
             <router-link :to="{ name: 'SinglePage', params: { id: restaurant.id } }" class="btn btn-primary">Vai al ristorante</router-link>
