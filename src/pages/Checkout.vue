@@ -13,7 +13,9 @@
                 last_name: '',
                 email: '',
                 phone_number: '',
-                address: ''
+                address: '',
+                show: false,
+                braintreeInstance: null
             }
         },
         computed: {
@@ -25,6 +27,24 @@
                 return total.toFixed(2);
             }
         },
+        mounted() {
+            dropin.create({
+                // insert your tokenization key or client token here
+                // sandbox_4xbcfnmh_2ns4kxhfxbspps9p
+                // sandbox_w3tpbxkw_86mh2yt4nm4gzz7f
+                authorization: "sandbox_4xbcfnmh_2ns4kxhfxbspps9p", 
+                container: '#braintree-drop-in-div',
+            } 
+            ).then((instance) => {
+                console.log('siamo entrati qui');
+                console.log(instance);
+                this.braintreeInstance = instance;
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('siamo nell errore');
+            })
+        },
         created () {
             // axios.get('http://127.0.0.1:8000/api/orders/generate').then(resp => console.log(resp));
             axios.get('http://127.0.0.1:8000/api/orders/generate').then(resp => {
@@ -34,37 +54,42 @@
         },
         methods: {
             checkout() {
-                const bodyPost = this.store.shoppingCart.map(el => {
-                    const {available, img, ...rest} = el;
-                    return rest;
-                })
-                console.log(bodyPost);
+                this.show = true;
+                // const bodyPost = this.store.shoppingCart.map(el => {
+                //     const {available, img, ...rest} = el;
+                //     return rest;
+                // })
+                // console.log(bodyPost);
+
+
                 // let number = null;
                 // if(!Number.parseInt(this.phone_number)){
 
                 // }
 
                     // const date = new Date();
-                let date = moment().format('YYYY-MM-DD')
 
-                const bodyRequest = {
-                    name: this.name,
-                    last_name: this.last_name,
-                    email: this.email,
-                    phone_number: this.phone_number,
-                    address: this.address,
-                    amount: this.getTotal,
-                    success: true,
-                    date: date,
-                    products: bodyPost
-                }
-                this.loading = false;
+
+                // let date = moment().format('YYYY-MM-DD')
+
+                // const bodyRequest = {
+                //     name: this.name,
+                //     last_name: this.last_name,
+                //     email: this.email,
+                //     phone_number: this.phone_number,
+                //     address: this.address,
+                //     amount: this.getTotal,
+                //     success: true,
+                //     date: date,
+                //     products: bodyPost
+                // }
+                // this.loading = false;
                 
-                    axios.post('http://127.0.0.1:8000/api/order/', bodyRequest).then(resp => {
-                        console.log(resp);
-                        this.loading = true;
-                    })
-                console.log(bodyRequest);
+                //     axios.post('http://127.0.0.1:8000/api/order/', bodyRequest).then(resp => {
+                //         console.log(resp);
+                //         this.loading = true;
+                //     })
+                // console.log(bodyRequest);
                 
             },
 
@@ -94,6 +119,54 @@
                 this.store.shoppingCart = this.store.shoppingCart.filter((el) => el.id !== id);
                 localStorage.setItem("carrello",JSON.stringify(this.store.shoppingCart));
                 console.log(this.store.shoppingCart);
+            },
+
+            checkBraintree() {
+                console.log('bottone checkout');
+                if (this.braintreeInstance) {
+                        this.braintreeInstance.requestPaymentMethod()
+                            .then(payload =>{
+                                    const paymentMethodNonce = payload.nonce;
+                                    // console.log("payment method nonce", payload.nonce);
+                                    axios.post('http://127.0.0.1:8000/api/orders/make/payment', {nonce: paymentMethodNonce, amount: this.getTotal})
+                                    .then(resp => {
+                                        if(resp.data.success) {
+                                            const bodyPost = this.store.shoppingCart.map(el => {
+                                            const {available, img, ...rest} = el;
+                                            return rest;
+                                        })
+                                        let date = moment().format('YYYY-MM-DD HH-mm-ss')
+                                        // const d = new Date();
+                                        // let time = d.getTime();
+                                        // d.setTime(time);
+                                        // let date = d;
+                                        const bodyRequest = {
+                                            name: this.name,
+                                            last_name: this.last_name,
+                                            email: this.email,
+                                            phone_number: this.phone_number,
+                                            address: this.address,
+                                            amount: this.getTotal,
+                                            success: true,
+                                            date: date,
+                                            products: bodyPost
+                                        }
+                                            console.log(bodyRequest);
+                                            axios.post('http://127.0.0.1:8000/api/order/', bodyRequest).then(resp => {
+                                            console.log(resp.data.success);
+                                            this.show = false;
+                                            })
+                                    }
+                                    })
+                                    .catch(error => {
+                                        console.log(error);
+                                        console.log('errore durante la procedura dell ordine');
+                                    })
+
+                                    // console.log({nonce: paymentMethodNonce, amount: this.getTotal});
+                                });
+                                    
+                }
             }
         }
     }
@@ -160,13 +233,26 @@
         </div>
     </form>
 
-</div>
+    </div>
 
 
-<div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end">
     <button @click="checkout()" :disabled="!loading" class="btn btn-primary ms_checkout">Vai al checkout</button>
+    </div>
+
 </div>
-</div>
+
+    <div :class="show ? 'd-block' : 'd-none'" class="ms_absolute">
+        
+        <div id="braintree-drop-in-div" >
+
+        </div>
+        <button class="btn btn-primary"
+            @click="checkBraintree()">Braintree btn
+        </button>
+    
+    
+    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -188,5 +274,20 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+}
+
+.ms_absolute{
+    position: absolute;
+    background-color: rgba(255, 255, 0, 0.402);
+
+    height: 100vh;
+    width: 100%;
+
+    left: 0;
+    top: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>
