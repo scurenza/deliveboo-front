@@ -1,7 +1,8 @@
 <script>
     import moment from 'moment';
     import axios from 'axios';
-import { store } from '../store';
+    import dropin from "braintree-web-drop-in"
+    import { store } from '../store';
     export default {
         name: 'Checkout',
         data() {
@@ -23,6 +24,13 @@ import { store } from '../store';
                 }, 0)
                 return total.toFixed(2);
             }
+        },
+        created () {
+            // axios.get('http://127.0.0.1:8000/api/orders/generate').then(resp => console.log(resp));
+            axios.get('http://127.0.0.1:8000/api/orders/generate').then(resp => {
+                console.log(resp);
+                console.log(resp.status);
+            })
         },
         methods: {
             checkout() {
