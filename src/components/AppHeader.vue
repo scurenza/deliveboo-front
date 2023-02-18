@@ -1,9 +1,19 @@
 <script>
+import { store } from '../store';
 export default{
     name: 'AppHeader',
     data(){
         return{
-
+            store
+        }
+    },
+    computed:{
+        numberCart(){
+            let result = 0;
+            this.store.shoppingCart.forEach(element => {
+                result += element.quantity;
+            });
+            return result;
         }
     }
 }
@@ -21,6 +31,7 @@ export default{
                         <a class="nav-link active" aria-current="page" href="http://127.0.0.1:8000/">Accedi</a>
                     </li>
                     <li class="nav-item ms-3">
+                        <div class="span bg-primary rounded text-white">{{ numberCart }}</div>
                         <router-link class="nav-link" aria-current="page" :to="{ name: 'Checkout' }">Carrello</router-link>
                     </li>
                 </ul>

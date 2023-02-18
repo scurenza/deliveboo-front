@@ -2,6 +2,7 @@
     import moment from 'moment';
     import axios from 'axios';
     import dropin from "braintree-web-drop-in"
+    import validator from 'validator';
     import { store } from '../store';
     export default {
         name: 'Checkout',
@@ -15,7 +16,8 @@
                 phone_number: '',
                 address: '',
                 show: false,
-                braintreeInstance: null
+                braintreeInstance: null,
+                errorEmail: false
             }
         },
         computed: {
@@ -54,43 +56,7 @@
         },
         methods: {
             checkout() {
-                this.show = true;
-                // const bodyPost = this.store.shoppingCart.map(el => {
-                //     const {available, img, ...rest} = el;
-                //     return rest;
-                // })
-                // console.log(bodyPost);
-
-
-                // let number = null;
-                // if(!Number.parseInt(this.phone_number)){
-
-                // }
-
-                    // const date = new Date();
-
-
-                // let date = moment().format('YYYY-MM-DD')
-
-                // const bodyRequest = {
-                //     name: this.name,
-                //     last_name: this.last_name,
-                //     email: this.email,
-                //     phone_number: this.phone_number,
-                //     address: this.address,
-                //     amount: this.getTotal,
-                //     success: true,
-                //     date: date,
-                //     products: bodyPost
-                // }
-                // this.loading = false;
-                
-                //     axios.post('http://127.0.0.1:8000/api/order/', bodyRequest).then(resp => {
-                //         console.log(resp);
-                //         this.loading = true;
-                //     })
-                // console.log(bodyRequest);
-                
+                this.show = true;    
             },
 
             incrementQuantity(id){
@@ -102,6 +68,7 @@
                 })
                 localStorage.setItem("carrello",JSON.stringify(this.store.shoppingCart));
             },
+
             decrementQuantity(id){
                 this.store.shoppingCart = this.store.shoppingCart.reduce((tot,current) => {
                     if(current.id === id){
@@ -115,6 +82,7 @@
                 },[])
                 localStorage.setItem("carrello",JSON.stringify(this.store.shoppingCart));
             },
+
             deleteProductFromCart(id){
                 this.store.shoppingCart = this.store.shoppingCart.filter((el) => el.id !== id);
                 localStorage.setItem("carrello",JSON.stringify(this.store.shoppingCart));
@@ -136,10 +104,6 @@
                                             return rest;
                                         })
                                         let date = moment().format('YYYY-MM-DD HH-mm-ss')
-                                        // const d = new Date();
-                                        // let time = d.getTime();
-                                        // d.setTime(time);
-                                        // let date = d;
                                         const bodyRequest = {
                                             name: this.name,
                                             last_name: this.last_name,
@@ -162,12 +126,28 @@
                                         console.log(error);
                                         console.log('errore durante la procedura dell ordine');
                                     })
-
                                     // console.log({nonce: paymentMethodNonce, amount: this.getTotal});
                                 });
                                     
                 }
+            },
+            checkInput(word){
+                // console.log(validator.isAlpha(word));
+                    return validator.isAlpha(word);
+            },
+            checkMail(mail){
+                this.errorEmail = !validator.isEmail(mail);
+                // console.log(validator.isEmail(mail));
+                // return validator.isEmail(mail);
+            },
+            checkNumber(number){
+                // const prova = 10;
+                // console.log(prova.toString());
+                // console.log(number);
+                const numberString = number.toString();
+                return validator.isLength(numberString, {max:13});
             }
+            
         }
     }
 </script>
@@ -209,35 +189,47 @@
   </tbody>
 </table>
 
-<div class="container">
+<!-- form -->
+<div v-if="store.shoppingCart.length>0" class="container">
     <form>
         <div class="mb-3">
-            <label for="name" class="form-label">Nome</label>
-            <input type="text" class="form-control" id="name" v-model="name">
+            <label for="name" class="form-label">Nome*</label>
+            <input type="text" @keyup="checkInput(name)" :class="name.length>0 && !checkInput(name) ? 'is-invalid' : ''" class="form-control" id="name" required v-model="name">
+            <div v-if="name.length>0 && !checkInput(name)" class="invalid-feedback">
+                <span>E' possibile inserire solamente lettere</span>
+            </div>
+
         </div>
         <div class="mb-3">  
-            <label for="last_name" class="form-label">Cognome</label>
-            <input type="text" class="form-control" id="last_name" v-model="last_name">
+            <label for="last_name" class="form-label">Cognome*</label>
+            <input type="text" @keyup="checkInput(last_name)" :class="last_name.length>0 && !checkInput(last_name) ? 'is-invalid' : ''" class="form-control" id="last_name" required v-model="last_name">
+            <div v-if="last_name.length>0 && !checkInput(last_name)" class="invalid-feedback">
+                <span>E' possibile inserire solamente lettere</span>
+            </div>
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" v-model="email">
+            <label for="email" class="form-label">Email*</label>
+            <input type="email" @blur="checkMail(email)" :class="email.length>0 && errorEmail ? 'is-invalid' : ''" class="form-control" id="email" required v-model="email">
+            <div v-if="email.length>0 && errorEmail" class="invalid-feedback">
+                <span>Inserisci una email valida</span>
+            </div>
         </div>
         <div class="mb-3">
-            <label for="phone_number" class="form-label">Numero</label>
-            <input type="number" class="form-control" id="phone_number" v-model="phone_number">
+            <label for="phone_number" class="form-label">Numero*</label>
+            <input type="number" @keyup="checkNumber(phone_number)" :class="phone_number.toString().length>0 && !checkNumber(phone_number) ? 'is-invalid' : ''" class="form-control" id="phone_number" required v-model="phone_number">
+            <div v-if="phone_number.toString().length>0 && !checkNumber(phone_number)" class="invalid-feedback">
+                <span>Inserisci un numero di telefono valido</span>
+            </div>
         </div>
         <div class="mb-3">
-            <label for="address" class="form-label">Address</label>
-            <input type="text" class="form-control" id="address" v-model="address">
+            <label for="address" class="form-label">Address*</label>
+            <input type="text" class="form-control" id="address" required v-model="address">
         </div>
     </form>
 
-    </div>
-
-
     <div class="d-flex justify-content-end">
     <button @click="checkout()" :disabled="!loading" class="btn btn-primary ms_checkout">Vai al checkout</button>
+    </div>
     </div>
 
 </div>
