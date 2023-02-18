@@ -22,7 +22,7 @@ export default{
 <template>
     <nav class="navbar bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <h4>Deliveboo</h4>
             </a>
             <div id="navbarNav">

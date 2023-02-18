@@ -118,6 +118,13 @@
                                             console.log(bodyRequest);
                                             axios.post('http://127.0.0.1:8000/api/order/', bodyRequest).then(resp => {
                                             console.log(resp.data.success);
+                                            this.store.shoppingCart = [];
+                                            localStorage.setItem('carrello', JSON.stringify([]));
+                                            this.name = '';
+                                            this.last_name = '';
+                                            this.email = '';
+                                            this.phone_number = '';
+                                            this.address = '';
                                             this.show = false;
                                             })
                                     }
@@ -157,7 +164,11 @@
 
     
     <h1>Carrello</h1>
-    <table class="table">
+    <div v-if="store.shoppingCart.length === 0">
+    <h1>
+        Il tuo Carrello è vuoto
+    </h1></div>
+    <table class="table" v-else>
   <thead>
     <tr>
         <th scope="col">Immagine</th>

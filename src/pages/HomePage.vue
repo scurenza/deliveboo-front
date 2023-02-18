@@ -8,23 +8,30 @@ export default {
     return {
       restaurants: [],
       types: [],
-      urlApi: 'api/filtercategories'
+      urlApi: 'api/filtercategories',
+      currentPage: 1,
+      lastPage: null,
+      totalUsers: null
     }
   },
   components:{
     AppHero
   },
   created() {
-    this.getData();
+    this.getData(this.currentPage);
 
   },
   methods: {
-    getData() {
+    getData(page) {
       Promise.all([
-        axios.get('http://127.0.0.1:8000/api/userslist'),
+        axios.get('http://127.0.0.1:8000/api/userslist', {params: {page: page}}),
         axios.get('http://127.0.0.1:8000/api/types')
       ]).then(resp=>{
-        this.restaurants = resp[0].data.results;
+        console.log(resp);
+        this.currentPage = resp[0].data.results.current_page;
+        this.lastPage = resp[0].data.results.last_page;
+        this.totalUsers = resp[0].data.results.total;
+        this.restaurants = resp[0].data.results.data;
         this.types = resp[1].data.results.map(item => {
           return {
             ...item,active: false
@@ -105,6 +112,10 @@ export default {
         </div>
       </div>
     </div>
+    <nav class="navigation d-flex justify-content-end">
+      <a :class="currentPage === 1 ? 'disabled' : ''" class="btn btn-success" @click.prevent="getData(currentPage - 1)">Back</a>
+      <a :class="currentPage === lastPage ? 'disabled' : ''" class="btn btn-success" @click.prevent="getData(currentPage + 1)">Next</a>
+    </nav>
   </div>
 
 </template>
