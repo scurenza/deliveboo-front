@@ -11,8 +11,9 @@ export default {
       urlApi: 'api/filtercategories',
       currentPage: 1,
       lastPage: null,
-      totalUsers: null
-    }
+      totalUsers: null,
+      loadingReastaurant: false
+      }
   },
   components:{
     AppHero
@@ -22,12 +23,27 @@ export default {
 
   },
   methods: {
-    getData(page) {
+    getRestaurants(page) {
+      this.loadingReastaurant = true;
+      axios.get('http://127.0.0.1:8000/api/userslist', {params: {page: page}})
+      .then(resp=>{
+        console.log(resp);
+        this.loadingReastaurant = false;
+        this.currentPage = resp[0].data.results.current_page;
+        this.lastPage = resp[0].data.results.last_page;
+        this.totalUsers = resp[0].data.results.total;
+        this.restaurants = resp[0].data.results.data;
+
+      })
+    },
+    getData() {
+      this.loadingReastaurant = true;
       Promise.all([
-        axios.get('http://127.0.0.1:8000/api/userslist', {params: {page: page}}),
+        axios.get('http://127.0.0.1:8000/api/userslist'),
         axios.get('http://127.0.0.1:8000/api/types')
       ]).then(resp=>{
         console.log(resp);
+        this.loadingReastaurant = false;
         this.currentPage = resp[0].data.results.current_page;
         this.lastPage = resp[0].data.results.last_page;
         this.totalUsers = resp[0].data.results.total;
@@ -69,9 +85,15 @@ export default {
 
       const urlUpdate = queryString.length > 0 ? `http://127.0.0.1:8000/${this.urlApi}?type=${queryString}` : 'http://127.0.0.1:8000/api/userslist';
     
+      this.loadingReastaurant = true;
+
       axios.get(urlUpdate).then(resp =>{
-        console.log(resp.data.results);
         this.restaurants = resp.data.results;
+        console.log(resp.data);
+        this.currentPage = resp[0].data.results.current_page;
+        this.lastPage = resp[0].data.results.last_page;
+        this.totalUsers = resp[0].data.results.total;
+        this.loadingReastaurant = false;
       })
 
 
@@ -84,7 +106,7 @@ export default {
 
 <template>
 
-  <AppHero/>
+  <AppHero/> 
 
   <!-- types -->
   <div class="container">
@@ -96,7 +118,7 @@ export default {
   </div>
 
   <div class="container">
-    <div class="row row-cols-3">
+    <div class="row row-cols-1 row-cols-sm-3">
       <div class="col" v-for="restaurant in restaurants">
         <div class="card" >
           <img :src="` http://127.0.0.1:8000/storage/${restaurant.img} `" class="card-img-top" alt="">
@@ -112,9 +134,9 @@ export default {
         </div>
       </div>
     </div>
-    <nav class="navigation d-flex justify-content-end">
-      <a :class="currentPage === 1 ? 'disabled' : ''" class="btn btn-success" @click.prevent="getData(currentPage - 1)">Back</a>
-      <a :class="currentPage === lastPage ? 'disabled' : ''" class="btn btn-success" @click.prevent="getData(currentPage + 1)">Next</a>
+    <nav class="navigation d-flex justify-content-end py-3">
+      <a :class="currentPage === 1 ? 'disabled' : ''" class="btn btn-success me-3" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage - 1)"><i class="fa-solid fa-chevron-left"></i></a>
+      <a :class="currentPage === lastPage ? 'disabled' : ''" class="btn btn-success" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage + 1)"><i class="fa-solid fa-chevron-right"></i></a>
     </nav>
   </div>
 
@@ -123,7 +145,7 @@ export default {
 <style lang="scss">
 @use "../style/general.scss" as *; 
 
-li{
+li::not(#no-pointer){
   cursor: pointer;
 }
 </style>

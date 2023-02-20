@@ -24,7 +24,7 @@ export default {
   <AppHeader/>
   
   <!-- hero -->
-  <AppHero/>
+  <!-- <AppHero/> -->
 
   <router-view></router-view>
 
