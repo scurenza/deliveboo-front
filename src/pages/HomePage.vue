@@ -110,7 +110,7 @@ export default {
 
   <!-- types -->
   <div class="container">
-    <ul class="list-group list-group-horizontal">
+    <ul class="list-group list-group-horizontal justify-content-center">
       <li @click="HandleCategoryClick(singletype.name, singletype.id)" :class="singletype.active ? 'bg-primary' : ''" class="list-group-item my-4" v-for="singletype in types" :key="singletype.id">
         {{ singletype.name }}
       </li>
@@ -144,6 +144,10 @@ export default {
 
 <style lang="scss">
 @use "../style/general.scss" as *; 
+
+li {
+  cursor: pointer;
+}
 
 li::not(#no-pointer){
   cursor: pointer;
