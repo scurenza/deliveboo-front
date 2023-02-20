@@ -24,15 +24,33 @@ export default {
   },
   methods: {
     getRestaurants(page) {
-      this.loadingReastaurant = true;
-      axios.get('http://127.0.0.1:8000/api/userslist', {params: {page: page}})
+
+      let query = [];
+      this.types.forEach(el => {
+        if(el.active){
+          query.push(el.name.toLowerCase()); 
+        }
+      });
+
+      const queryString = query.join(',')
+      const urlApi = queryString.length > 0 ? `http://127.0.0.1:8000/api/filtercategories?type=${queryString}` : 'http://127.0.0.1:8000/api/userslist'
+      console.log({urlApi});
+      // this.loadingReastaurant = true;
+
+      axios.get(urlApi, {params: {page: page}})
       .then(resp=>{
-        console.log(resp);
-        this.loadingReastaurant = false;
-        this.currentPage = resp[0].data.results.current_page;
-        this.lastPage = resp[0].data.results.last_page;
-        this.totalUsers = resp[0].data.results.total;
-        this.restaurants = resp[0].data.results.data;
+        console.log(resp.data);
+
+        this.currentPage = resp.data.results.current_page;
+        this.restaurants = resp.data.results.data;
+        this.lastPage = resp.data.results.last_page;
+        this.totalUsers = resp.data.results.total;
+
+        // this.loadingReastaurant = false;
+        // this.currentPage = resp[0].data.results.current_page;
+        // this.lastPage = resp[0].data.results.last_page;
+        // this.totalUsers = resp[0].data.results.total;
+        // this.restaurants = resp[0].data.results.data;
 
       })
     },
@@ -87,13 +105,21 @@ export default {
     
       this.loadingReastaurant = true;
 
-      axios.get(urlUpdate).then(resp =>{
-        this.restaurants = resp.data.results;
+      axios.get(urlUpdate, {params: {page: this.currentPage}}).then(resp =>{
+        // this.restaurants = resp.data.results;
+        // console.log(resp.data);
+        // this.currentPage = resp[0].data.results.current_page;
+        // this.lastPage = resp[0].data.results.last_page;
+        // this.totalUsers = resp[0].data.results.total;
+        // this.loadingReastaurant = false;
+
         console.log(resp.data);
-        this.currentPage = resp[0].data.results.current_page;
-        this.lastPage = resp[0].data.results.last_page;
-        this.totalUsers = resp[0].data.results.total;
-        this.loadingReastaurant = false;
+
+
+        this.currentPage = resp.data.results.current_page;
+        this.restaurants = resp.data.results.data;
+        this.lastPage = resp.data.results.last_page;
+        this.totalUsers = resp.data.results.total;
       })
 
 
@@ -135,8 +161,8 @@ export default {
       </div>
     </div>
     <nav class="navigation d-flex justify-content-end py-3">
-      <a :class="currentPage === 1 ? 'disabled' : ''" class="btn btn-success me-3" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage - 1)"><i class="fa-solid fa-chevron-left"></i></a>
-      <a :class="currentPage === lastPage ? 'disabled' : ''" class="btn btn-success" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage + 1)"><i class="fa-solid fa-chevron-right"></i></a>
+      <a v-if="this.currentPage !== 1" class="btn btn-success me-3" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage - 1)"><i class="fa-solid fa-chevron-left"></i></a>
+      <a v-if="this.lastPage !== null && this.currentPage * 3 < this.totalUsers" class="btn btn-success" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage + 1)"><i class="fa-solid fa-chevron-right"></i></a>
     </nav>
   </div>
 
