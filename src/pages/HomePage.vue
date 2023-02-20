@@ -135,27 +135,31 @@ export default {
   <AppHero/> 
 
   <!-- types -->
-  <div class="container">
-    <ul class="list-group list-group-horizontal justify-content-center">
-      <li @click="HandleCategoryClick(singletype.name, singletype.id)" :class="singletype.active ? 'bg-primary' : ''" class="list-group-item my-4" v-for="singletype in types" :key="singletype.id">
-        {{ singletype.name }}
-      </li>
-    </ul>
+  <div class="bg-types">
+    <div class="container">
+      <ul class="list-group list-group-horizontal justify-content-center">
+        <li @click="HandleCategoryClick(singletype.name, singletype.id)" :class="singletype.active ? 'my-bg' : ''" class="my-list-group-item my-4 text-center" v-for="singletype in types" :key="singletype.id">
+          {{ singletype.name }}
+        </li>
+      </ul>
+    </div>
   </div>
 
-  <div class="container">
-    <div class="row row-cols-1 row-cols-sm-3">
+  <div class="container mt-5 py-3">
+    <div class="row row-cols-1 row-cols-sm-3 mt-4">
       <div class="col" v-for="restaurant in restaurants">
+
+        
         <div class="card" >
           <img :src="` http://127.0.0.1:8000/storage/${restaurant.img} `" class="card-img-top" alt="">
-          <div class="card-body">
+          <div class="card-body d-flex flex-column justify-content-end">
             <h5 class="card-title">{{ restaurant.name }}</h5>
             <p class="card-text">Tipologie: <br>
               <span v-for="singleType in restaurant.types">
                 {{ singleType.name }} <br>
               </span>
             </p>
-            <router-link :to="{ name: 'SinglePage', params: { id: restaurant.id } }" class="btn btn-primary">Vai al ristorante</router-link>
+            <router-link :to="{ name: 'SinglePage', params: { id: restaurant.id } }" class="btn my-btn">Vai al ristorante</router-link>
           </div>
         </div>
       </div>
@@ -169,7 +173,8 @@ export default {
 </template>
 
 <style lang="scss">
-@use "../style/general.scss" as *; 
+@use "../style/general.scss" as *;
+@use "../style/partials/variables" as *; 
 
 li {
   cursor: pointer;
@@ -178,4 +183,81 @@ li {
 li::not(#no-pointer){
   cursor: pointer;
 }
+
+.card {
+ width: 220px;
+ min-height: 320px;
+ border-radius: 50px;
+ background: #e0e0e0;
+ box-shadow: 20px 20px 30px #bebebe,
+               -20px -20px 30px #ffffff;
+}
+
+.bg-types {
+  background-color: $secondary-color;
+}
+
+.my-list-group-item {
+ --color: white;
+ font-family: inherit;
+ display: inline-block;
+ width: 8em;
+ height: 2.6em;
+ line-height: 2.5em;
+ margin: 20px;
+ position: relative;
+ overflow: hidden;
+ border: 2px solid var(--color);
+ transition: color .5s;
+ z-index: 1;
+ font-size: 17px;
+ border-radius: 6px;
+ font-weight: 500;
+ color: var(--color);
+}
+
+.my-list-group-item:before {
+ content: "";
+ position: absolute;
+ z-index: -1;
+ background: $main-bg;
+ height: 150px;
+ width: 200px;
+ border-radius: 50%;
+}
+
+.my-list-group-item:hover {
+ color: #fff;
+}
+
+.my-list-group-item:before {
+ top: 100%;
+ left: 100%;
+ transition: all .7s;
+}
+
+.my-list-group-item:hover:before {
+ top: -30px;
+ left: -30px;
+}
+
+.my-list-group-item:active:before {
+ background: $main-bg;
+ transition: background 0s;
+}
+
+.my-bg {
+  background: $main-bg;
+}
+
+.btn.my-btn {
+  background-color: $secondary-color;
+  color: white;
+
+  &:hover {
+    background-color: #14213de1;
+    color: white;
+  }
+}
+
 </style>

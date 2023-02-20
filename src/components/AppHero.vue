@@ -11,7 +11,7 @@ export default{
 
 <template>
    <div class="ms_hero">
-        <img src="../img/jumbo.jpg" alt="">
+        <img src="../img/banner.jpg" alt="">
    </div>
 </template>
 
@@ -31,10 +31,9 @@ export default{
 
     img{
         object-fit: cover;
-        object-position: center;
+        object-position:center;
         height: 100%;
         width: 100%;
-        
     }
 }
 </style>

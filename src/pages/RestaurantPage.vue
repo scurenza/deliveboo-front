@@ -101,19 +101,19 @@ export default {
     </ul>
   </div> -->
 
-  <div class="container">
+  <div id="my-container" class="container">
     
-      <h1 class="text-center">Nome ristorante: {{ restaurant.name }}</h1>
-      <h2 class="text-center">P. IVA: {{ restaurant.VAT }}</h2>
+      <h1 class="text-center">{{ restaurant.name }}</h1>
+      <h5 class="text-center mb-4">P. IVA: {{ restaurant.VAT }}</h5>
       <div class="row row-cols-3">
         <div v-for="product in products" class="col">
             <div class="card" >
               <img :src="` http://127.0.0.1:8000/storage/${product.img} `" class="card-img-top" alt="...">
-              <div class="card-body">
+              <div class="card-body d-flex flex-column justify-content-end">
                 <h5 class="card-title">{{product.name}}</h5>
                 <p class="card-text text-secondary">Ingredienti: {{ product.description }}</p>
                 <p class="card-text">Prezzo: {{ product.price }}€</p>
-                <button @click="productControl(product)"  class="btn btn-primary">Aggiungi al carrello</button>
+                <button @click="productControl(product)"  class="btn my-btn">Aggiungi al carrello</button>
               </div>
             </div>
         </div>
@@ -132,12 +132,12 @@ export default {
 
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @use "../style/general.scss" as *; 
+@use "../style/partials/variables" as *;
 
 .container {
   position: relative;
-
   #customModal {
     padding: 2rem;
     border-radius: 20px;
@@ -146,6 +146,22 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
+  }
+}
+
+#my-container {
+  margin-top:55px;
+  
+}
+
+.card-title{
+  color: $main-bg;
+}
+
+.card {
+  min-height: 361px;
+ .text-secondary{
+  font-size: .8rem;
   }
 }
 </style>

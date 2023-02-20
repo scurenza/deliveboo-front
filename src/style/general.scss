@@ -1,5 +1,13 @@
+@use "./partials/variables" as *;
 @import "node_modules/bootstrap/scss/bootstrap.scss";
 
-:root {
-    --main-color: #FCA311;
-}
+
+.btn.my-btn {
+    background-color: $secondary-color;
+    color: white;
+  
+    &:hover {
+      background-color: #14213de1;
+      color: white;
+    }
+  }

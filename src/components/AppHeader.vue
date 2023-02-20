@@ -71,7 +71,6 @@ export default{
 
     color: $text-primary;
     
-    
 }
 
 .btn {
