@@ -171,7 +171,7 @@ export default {
       <a v-if="this.lastPage !== null && this.currentPage * 3 < this.totalUsers" class="btn btn-success" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage + 1)"><i class="fa-solid fa-chevron-right"></i></a>
     </nav>
   </div>
-
+  <AppFooter />
 </template>
 
 <style lang="scss">
