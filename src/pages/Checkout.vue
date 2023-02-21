@@ -17,7 +17,8 @@
                 address: '',
                 show: false,
                 braintreeInstance: null,
-                errorEmail: false
+                errorEmail: false,
+                errorMessage: ''
             }
         },
         computed: {
@@ -56,7 +57,14 @@
         },
         methods: {
             checkout() {
-                this.show = true;    
+                if (this.name !== '' && this.last_name !== '' && this.email !== '' && this.phone_number !== '' && this.address !== '') {
+                    this.show = true;   
+                    this.errorMessage = '';
+                } else {
+                    this.errorMessage = 'Compila tutti i campi per procedere al checkout'
+                }
+                  
+
             },
 
             incrementQuantity(id){
@@ -160,7 +168,7 @@
 </script>
 
 <template>
-    <div class="container">
+    <div class="container mt-4">
 
     
     <h1>Carrello</h1>
@@ -168,34 +176,45 @@
     <h1>
         Il tuo Carrello è vuoto
     </h1></div>
-    <table class="table" v-else>
+    <table class="table table-borderless" v-else>
   <thead>
     <tr>
         <th scope="col">Immagine</th>
         <th scope="col">Nome</th>
-        <th scope="col">Prezzo</th>
+        <th  scope="col">Prezzo</th>
         <th scope="col">Quantità</th>
     </tr>
   </thead>
   <tbody>
     
-    <tr v-for="product in store.shoppingCart">
+    <tr class="border-bottom" v-for="product in store.shoppingCart">
+
       <td scope="row">
         <img :src="` http://127.0.0.1:8000/storage/${product.img} `" alt="">
       </td>
-      <td>{{ product.name }}</td>
-      <td>{{ product.price }} €</td>
-      <td class="d-flex align-items-center">{{ product.quantity }} 
-        <div class="ms-4">
-            <button @click="incrementQuantity(product.id)" class="btn btn-info">+</button>
+      
+      <td class="d-flex align-items-center"><span>{{ product.name }}</span></td>
+      <td class="td-ms-price"><span class="ms-price">{{ product.price }} €</span></td>
+      <td class="d-flex align-items-center justify-content-between">
+        <div class="">
+            {{ product.quantity }} 
+
+            <button @click="incrementQuantity(product.id)" class="btn btn-info ms-4 me-2">+</button>
             <button @click="decrementQuantity(product.id)" class="btn btn-info">-</button>
         </div>
-        <button @click="deleteProductFromCart(product.id)" class="btn btn-danger">Elimina</button>
+        <!-- <button id="delete-button" @click="deleteProductFromCart(product.id)" class="btn btn-danger">Elimina</button> -->
+
+        <!-- Animazione bottone elimina nel carrello -->
+        <div>
+            <button id="delete-button" class="noselect" @click="deleteProductFromCart(product.id)"><span class="text">Elimina</span><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
+            <!-- Animazione bottone elimina nel carrello -->
+        </div>
+
     </td>
     </tr>
     <tr>
         <td colspan="3"></td>
-        <td>Totale: {{ getTotal }} €</td>
+        <td class="text-end" >Totale: {{ getTotal }} €</td>
     </tr>
   </tbody>
 </table>
@@ -241,6 +260,8 @@
     <div class="d-flex justify-content-end">
     <button @click="checkout()" :disabled="!loading" class="btn btn-primary ms_checkout">Vai al checkout</button>
     </div>
+    <span class="text-danger" v-if="this.errorMessage !== ''" >{{ errorMessage }}</span>
+
     </div>
 
 </div>
@@ -281,8 +302,7 @@ input[type=number] {
 
 .ms_absolute{
     position: absolute;
-    background-color: rgba(255, 255, 0, 0.402);
-
+    background-color: rgba(0, 0, 0, 0.506);
     height: 100vh;
     width: 100%;
 
@@ -292,5 +312,89 @@ input[type=number] {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#braintree-drop-in-div{
+    margin-top: 3rem;
+}
+
+
+
+// Bottone elimina nel carrello
+
+#delete-button {
+ width: 150px;
+ height: 50px;
+ cursor: pointer;
+ display: flex;
+ align-items: center;
+ background: red;
+ border: none;
+ border-radius: 5px;
+ box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+ background: #e62222;
+}
+
+#delete-button, #delete-button span {
+ transition: 200ms;
+}
+
+#delete-button .text {
+ transform: translateX(35px);
+ color: white;
+ font-weight: bold;
+}
+
+#delete-button .icon {
+ position: absolute;
+ border-left: 1px solid #c41b1b;
+ transform: translateX(110px);
+ height: 40px;
+ width: 40px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+#delete-button svg {
+ width: 15px;
+ fill: #eee;
+}
+
+#delete-button:hover {
+ background: #ff3636;
+}
+
+#delete-button:hover .text {
+ color: transparent;
+}
+
+#delete-button:hover .icon {
+ width: 150px;
+ border-left: none;
+ transform: translateX(0);
+}
+
+#delete-button:focus {
+ outline: none;
+}
+
+#delete-button:active .icon svg {
+ transform: scale(0.8);
+}
+
+.btn-info{
+    height: 38px;
+    width: 38px;
+}
+
+.td-ms-price{
+    position: relative;
+}
+
+.ms-price{
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
 }
 </style>

@@ -37,16 +37,19 @@ export default{
                         <!-- <div class="span bg-primary rounded text-white">{{ numberCart }}</div>
                         <router-link class="nav-link" aria-current="page" :to="{ name: 'Checkout' }">Carrello</router-link> -->
 
-                        <button type="button" class="btn position-relative px-3" style="height: 40px;">
+                        
                             <router-link  class="nav-link" aria-current="page" :to="{ name: 'Checkout' }">
-                                <i class="fa-solid fa-cart-shopping text-light position-absolute top-50 start-50 translate-middle"></i>
-                            </router-link> 
+                                <button type="button" class="btn position-relative px-3" style="height: 40px;">
 
-                            <span id="push" v-if="numberCart > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"> 
-                                {{ numberCart }}
-                                <!-- <span class="visually-hidden">unread messages</span> -->
-                            </span> 
-                        </button>
+                                    <i class="fa-solid fa-cart-shopping text-light position-absolute top-50 start-50 translate-middle"></i>
+                                    <span id="push" v-if="numberCart > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"> 
+                                    {{ numberCart }}
+                                    <!-- <span class="visually-hidden">unread messages</span> -->
+                                    </span>
+                                </button>
+
+                            </router-link>  
+                        
 
                     </li>
                 </ul>
