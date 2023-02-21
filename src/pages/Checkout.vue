@@ -19,7 +19,8 @@ export default {
             show: false,
             braintreeInstance: null,
             errorEmail: false,
-            errorMessage: ''
+            errorMessage: '',
+            paymentErrorMessage: ''
         }
     },
     components: {
@@ -102,19 +103,25 @@ export default {
         },
 
         checkBraintree() {
+
             console.log('bottone checkout');
             if (this.braintreeInstance) {
                     this.braintreeInstance.requestPaymentMethod()
                         .then(payload =>{
+                            this.paymentErrorMessage = '';
                                 const paymentMethodNonce = payload.nonce;
                                 // console.log("payment method nonce", payload.nonce);
                                 axios.post('http://127.0.0.1:8000/api/orders/make/payment', {nonce: paymentMethodNonce, amount: this.getTotal})
                                 .then(resp => {
+                                        console.log('siamo allinterno di questa chiamata')
                                     if(resp.data.success) {
+                                        
+                                            console.log('risposta ha avuto successo');
                                         const bodyPost = this.store.shoppingCart.map(el => {
                                         const {available, img, ...rest} = el;
-                                        // return rest;
+                                        return rest;
                                     })
+                                    console.log({bodyPost});
                                     let date = moment().format('YYYY-MM-DD HH-mm-ss')
                                     const bodyRequest = {
                                         name: this.name,
@@ -130,6 +137,8 @@ export default {
                                         console.log(bodyRequest);
                                         axios.post('http://127.0.0.1:8000/api/order/', bodyRequest).then(resp => {
                                         console.log(resp.data.success);
+                                        this.show = false;
+                                        
                                         this.store.shoppingCart = [];
                                         localStorage.setItem('carrello', JSON.stringify([]));
                                         this.name = '';
@@ -137,16 +146,18 @@ export default {
                                         this.email = '';
                                         this.phone_number = '';
                                         this.address = '';
-                                        this.show = false;
                                         })
-                                }
+                                    }
                                 })
+                                
+                            })
                                 // console.log({nonce: paymentMethodNonce, amount: this.getTotal});
+
+                                .catch(error => {
+                                
+                                this.paymentErrorMessage = 'Attenzione! I dati inseriti non sono corretti. Ricontrolla e riprova.';
                             })
-                            .catch(error => {
-                                // console.log(error);
-                                console.log('errore durante la procedura dell ordine');
-                            })
+                            
                                 
             }
         },
@@ -171,13 +182,15 @@ export default {
 }
 </script>
 
+
 <template>
+    <div class="overflow-auto" style="height: 100vh;" >
     <div class="container mt-4">
 
 
         <h1>Carrello</h1>
         <div v-if="store.shoppingCart.length === 0" class="container emptyCart">
-            <h1>
+            <h1 class="text-center">
                 Il tuo Carrello è vuoto
             </h1>
         </div>
@@ -188,7 +201,7 @@ export default {
             <th scope="col">Nome</th>
             <th scope="col">Prezzo</th>
             <th scope="col">Quantità</th>
-            <th scope="col">Azioni</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -206,8 +219,8 @@ export default {
             <div class="ms-price d-flex align-items-center justify-content-between">
                 <div class="d-flex">
         
-                    <button @click="incrementQuantity(product.id)" class="btn btn-info ms-4 me-2">+</button>
-                    <button @click="decrementQuantity(product.id)" class="btn btn-info">-</button>
+                    <button @click="incrementQuantity(product.id)" class="btn my-btn  ms-4 me-2">+</button>
+                    <button @click="decrementQuantity(product.id)" class="btn my-btn ">-</button>
                 </div>
                 <!-- <button id="delete-button" @click="deleteProductFromCart(product.id)" class="btn btn-danger">Elimina</button> -->
         
@@ -223,7 +236,7 @@ export default {
         </tr>
         <tr>
             <td colspan="4"></td>
-            <td class="text-end" >Totale: {{ getTotal }} €</td>
+            <td class="text-end mt-2" ><h4> Totale: {{ getTotal }} € </h4></td>
         </tr>
         </tbody>
         </table>
@@ -265,28 +278,31 @@ export default {
                 <input type="text" class="form-control" id="address" required v-model="address">
             </div>
         </form>
-
+        <span class="text-danger" v-if="this.errorMessage !== ''" >{{ errorMessage }}</span>
         <div class="d-flex justify-content-end">
         <button @click="checkout()" :disabled="!loading" class="btn btn-primary mb-4 ms_checkout">Vai al checkout</button>
         </div>
-        <span class="text-danger" v-if="this.errorMessage !== ''" >{{ errorMessage }}</span>
+    
 
         </div>
 
         </div>
 
         <div :class="show ? 'd-block' : 'd-none'" class="ms_absolute">
-            
-            <div id="braintree-drop-in-div" >
 
+            <div class="modal-container px-2 bg-light">
+                <div id="braintree-drop-in-div"></div>
+
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary" @click="checkBraintree()">
+                        Paga
+                    </button>
+                </div>
+                <div class="text-center text-danger p-2 mt-2" v-if="paymentErrorMessage !== ''" >{{ paymentErrorMessage }}</div>
             </div>
-            <button class="btn btn-primary"
-                @click="checkBraintree()">Paga
-            </button>
-
-
-    </div>
+        </div>
     <AppFooter />
+    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -313,7 +329,7 @@ input[type=number] {
 .ms_absolute{
 position: absolute;
 background-color: rgba(0, 0, 0, 0.506);
-height: 100vh;
+height: 100%;
 width: 100%;
 
 left: 0;
@@ -324,11 +340,23 @@ justify-content: center;
 align-items: center;
 }
 
-#braintree-drop-in-div{
-margin-top: 3rem;
+// #braintree-drop-in-div{
+// width: 70%;
+
+// margin: 3rem auto;
+// }
+
+.modal-container{
+    width: 50%;
+    margin: 3rem auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 700px;
+    border-radius: 20px;
+    
 }
-
-
 
 // Bottone elimina nel carrello
 
@@ -393,7 +421,7 @@ outline: none;
 transform: scale(0.8);
 }
 
-.btn-info{
+.my-btn{
 height: 38px;
 width: 38px;
 }
@@ -409,6 +437,6 @@ transform: translate(0, -50%);
 }
 
 .emptyCart {
-    height: 60vh;
+    min-height: 80vh;
 }
 </style>

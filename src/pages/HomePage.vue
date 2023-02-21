@@ -148,7 +148,7 @@ export default {
   </div>
 
   <div class="container mt-5 py-3">
-    <div class="row row-cols-1 row-cols-sm-3 mt-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-sm-3 mt-4 gy-5">
       <div class="col" v-for="restaurant in restaurants">
 
         
@@ -156,8 +156,8 @@ export default {
           <img :src="` http://127.0.0.1:8000/storage/${restaurant.img} `" class="card-img-top" alt="">
           <div class="card-body d-flex flex-column justify-content-end">
             <h5 class="card-title">{{ restaurant.name }}</h5>
-            <p class="card-text">Tipologie: <br>
-              <span v-for="singleType in restaurant.types">
+            <p class="card-text d-flex justify-content-between">
+              <span class="rounded-pill my-type" v-for="singleType in restaurant.types">
                 {{ singleType.name }} <br>
               </span>
             </p>
@@ -187,7 +187,7 @@ li::not(#no-pointer){
 }
 
 .card {
- width: 220px;
+ width: 100%;
  min-height: 320px;
  border-radius: 50px;
  background: #e0e0e0;
@@ -262,4 +262,8 @@ li::not(#no-pointer){
   }
 }
 
+.my-type{
+  background-color: $main-bg;
+  padding:.1rem .3rem;
+}
 </style>
