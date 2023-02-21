@@ -1,4 +1,5 @@
 <script>
+import AppFooter from '../components/AppFooter.vue'
 import axios from 'axios';
 import { store } from '../store';
 export default {
@@ -25,6 +26,9 @@ export default {
     })
 
     console.log(this.$route.params);
+  },
+  components: {
+AppFooter,
   },
   mounted() {
     

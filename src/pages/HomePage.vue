@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
 import AppHero from '../components/AppHero.vue';
+import AppFooter from '../components/AppFooter.vue'
 
 export default {
   name: 'HomePage',
@@ -16,7 +17,8 @@ export default {
       }
   },
   components:{
-    AppHero
+    AppHero,
+    AppFooter
   },
   created() {
     this.getData(this.currentPage);
