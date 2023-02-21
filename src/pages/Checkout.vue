@@ -4,6 +4,7 @@ import axios from 'axios';
 import dropin from "braintree-web-drop-in"
 import validator from 'validator';
 import { store } from '../store';
+import AppFooter from '../components/AppFooter.vue';
 export default {
     name: 'Checkout',
     data() {
@@ -20,6 +21,9 @@ export default {
             errorEmail: false,
             errorMessage: ''
         }
+    },
+    components: {
+        AppFooter
     },
     computed: {
         getTotal() {
@@ -109,7 +113,7 @@ export default {
                                     if(resp.data.success) {
                                         const bodyPost = this.store.shoppingCart.map(el => {
                                         const {available, img, ...rest} = el;
-                                        return rest;
+                                        // return rest;
                                     })
                                     let date = moment().format('YYYY-MM-DD HH-mm-ss')
                                     const bodyRequest = {
@@ -137,12 +141,12 @@ export default {
                                         })
                                 }
                                 })
-                                .catch(error => {
-                                    console.log(error);
-                                    console.log('errore durante la procedura dell ordine');
-                                })
                                 // console.log({nonce: paymentMethodNonce, amount: this.getTotal});
-                            });
+                            })
+                            .catch(error => {
+                                // console.log(error);
+                                console.log('errore durante la procedura dell ordine');
+                            })
                                 
             }
         },
@@ -168,119 +172,121 @@ export default {
 </script>
 
 <template>
-<div class="container mt-4">
+    <div class="container mt-4">
 
 
-<h1>Carrello</h1>
-<div v-if="store.shoppingCart.length === 0">
-<h1>
-    Il tuo Carrello è vuoto
-</h1></div>
-<table class="table table-borderless" v-else>
-<thead>
-<tr>
-    <th scope="col">Immagine</th>
-    <th scope="col">Nome</th>
-    <th scope="col">Prezzo</th>
-    <th scope="col">Quantità</th>
-    <th scope="col">Azioni</th>
-</tr>
-</thead>
-<tbody>
-
-<tr class="border-bottom" v-for="product in store.shoppingCart">
-
-  <td scope="row">
-    <img :src="` http://127.0.0.1:8000/storage/${product.img} `" alt="">
-  </td>
-  <!-- class=" d-flex align-items-center justify-content-between" -->
-  <td class="td-ms-price"><span class="ms-price">{{ product.name }}</span></td>
-  <td class="td-ms-price"><span class="ms-price">{{ product.price }} €</span></td>
-  <td class="td-ms-price"><span class="ms-price">{{ product.quantity }}</span></td>
-  <td class="td-ms-price">
-    <div class="ms-price d-flex align-items-center justify-content-between">
-        <div class="d-flex">
-  
-            <button @click="incrementQuantity(product.id)" class="btn btn-info ms-4 me-2">+</button>
-            <button @click="decrementQuantity(product.id)" class="btn btn-info">-</button>
+        <h1>Carrello</h1>
+        <div v-if="store.shoppingCart.length === 0" class="container emptyCart">
+            <h1>
+                Il tuo Carrello è vuoto
+            </h1>
         </div>
-        <!-- <button id="delete-button" @click="deleteProductFromCart(product.id)" class="btn btn-danger">Elimina</button> -->
-  
-        <!-- Animazione bottone elimina nel carrello -->
-        <div>
-            <button id="delete-button" class="noselect" @click="deleteProductFromCart(product.id)"><span class="text">Elimina</span><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
-            <!-- Animazione bottone elimina nel carrello -->
+        <table class="table table-borderless" v-else>
+        <thead>
+        <tr>
+            <th scope="col">Immagine</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Prezzo</th>
+            <th scope="col">Quantità</th>
+            <th scope="col">Azioni</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr class="border-bottom" v-for="product in store.shoppingCart">
+
+        <td scope="row">
+            <img :src="` http://127.0.0.1:8000/storage/${product.img} `" alt="">
+        </td>
+        <!-- class=" d-flex align-items-center justify-content-between" -->
+        <td class="td-ms-price"><span class="ms-price">{{ product.name }}</span></td>
+        <td class="td-ms-price"><span class="ms-price">{{ product.price }} €</span></td>
+        <td class="td-ms-price"><span class="ms-price">{{ product.quantity }}</span></td>
+        <td class="td-ms-price">
+            <div class="ms-price d-flex align-items-center justify-content-between">
+                <div class="d-flex">
+        
+                    <button @click="incrementQuantity(product.id)" class="btn btn-info ms-4 me-2">+</button>
+                    <button @click="decrementQuantity(product.id)" class="btn btn-info">-</button>
+                </div>
+                <!-- <button id="delete-button" @click="deleteProductFromCart(product.id)" class="btn btn-danger">Elimina</button> -->
+        
+                <!-- Animazione bottone elimina nel carrello -->
+                <div>
+                    <button id="delete-button" class="noselect" @click="deleteProductFromCart(product.id)"><span class="text">Elimina</span><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
+                    <!-- Animazione bottone elimina nel carrello -->
+                </div>
+            </div>
+        </td>     
+                
+
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+            <td class="text-end" >Totale: {{ getTotal }} €</td>
+        </tr>
+        </tbody>
+        </table>
+
+        <!-- form -->
+        <div v-if="store.shoppingCart.length>0" class="container">
+        <form>
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome*</label>
+                <input type="text" @keyup="checkInput(name)" :class="name.length>0 && !checkInput(name) ? 'is-invalid' : ''" class="form-control" id="name" required v-model="name">
+                <div v-if="name.length>0 && !checkInput(name)" class="invalid-feedback">
+                    <span>E' possibile inserire solamente lettere</span>
+                </div>
+
+            </div>
+            <div class="mb-3">  
+                <label for="last_name" class="form-label">Cognome*</label>
+                <input type="text" @keyup="checkInput(last_name)" :class="last_name.length>0 && !checkInput(last_name) ? 'is-invalid' : ''" class="form-control" id="last_name" required v-model="last_name">
+                <div v-if="last_name.length>0 && !checkInput(last_name)" class="invalid-feedback">
+                    <span>E' possibile inserire solamente lettere</span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email*</label>
+                <input type="email" @blur="checkMail(email)" :class="email.length>0 && errorEmail ? 'is-invalid' : ''" class="form-control" id="email" required v-model="email">
+                <div v-if="email.length>0 && errorEmail" class="invalid-feedback">
+                    <span>Inserisci una email valida</span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="phone_number" class="form-label">Numero*</label>
+                <input type="number" @keyup="checkNumber(phone_number)" :class="phone_number.toString().length>0 && !checkNumber(phone_number) ? 'is-invalid' : ''" class="form-control" id="phone_number" required v-model="phone_number">
+                <div v-if="phone_number.toString().length>0 && !checkNumber(phone_number)" class="invalid-feedback">
+                    <span>Inserisci un numero di telefono valido</span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address*</label>
+                <input type="text" class="form-control" id="address" required v-model="address">
+            </div>
+        </form>
+
+        <div class="d-flex justify-content-end">
+        <button @click="checkout()" :disabled="!loading" class="btn btn-primary mb-4 ms_checkout">Vai al checkout</button>
         </div>
-    </div>
-  </td>     
+        <span class="text-danger" v-if="this.errorMessage !== ''" >{{ errorMessage }}</span>
+
+        </div>
+
+        </div>
+
+        <div :class="show ? 'd-block' : 'd-none'" class="ms_absolute">
             
+            <div id="braintree-drop-in-div" >
 
-</tr>
-<tr>
-    <td colspan="4"></td>
-    <td class="text-end" >Totale: {{ getTotal }} €</td>
-</tr>
-</tbody>
-</table>
+            </div>
+            <button class="btn btn-primary"
+                @click="checkBraintree()">Paga
+            </button>
 
-<!-- form -->
-<div v-if="store.shoppingCart.length>0" class="container">
-<form>
-    <div class="mb-3">
-        <label for="name" class="form-label">Nome*</label>
-        <input type="text" @keyup="checkInput(name)" :class="name.length>0 && !checkInput(name) ? 'is-invalid' : ''" class="form-control" id="name" required v-model="name">
-        <div v-if="name.length>0 && !checkInput(name)" class="invalid-feedback">
-            <span>E' possibile inserire solamente lettere</span>
-        </div>
 
     </div>
-    <div class="mb-3">  
-        <label for="last_name" class="form-label">Cognome*</label>
-        <input type="text" @keyup="checkInput(last_name)" :class="last_name.length>0 && !checkInput(last_name) ? 'is-invalid' : ''" class="form-control" id="last_name" required v-model="last_name">
-        <div v-if="last_name.length>0 && !checkInput(last_name)" class="invalid-feedback">
-            <span>E' possibile inserire solamente lettere</span>
-        </div>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email*</label>
-        <input type="email" @blur="checkMail(email)" :class="email.length>0 && errorEmail ? 'is-invalid' : ''" class="form-control" id="email" required v-model="email">
-        <div v-if="email.length>0 && errorEmail" class="invalid-feedback">
-            <span>Inserisci una email valida</span>
-        </div>
-    </div>
-    <div class="mb-3">
-        <label for="phone_number" class="form-label">Numero*</label>
-        <input type="number" @keyup="checkNumber(phone_number)" :class="phone_number.toString().length>0 && !checkNumber(phone_number) ? 'is-invalid' : ''" class="form-control" id="phone_number" required v-model="phone_number">
-        <div v-if="phone_number.toString().length>0 && !checkNumber(phone_number)" class="invalid-feedback">
-            <span>Inserisci un numero di telefono valido</span>
-        </div>
-    </div>
-    <div class="mb-3">
-        <label for="address" class="form-label">Address*</label>
-        <input type="text" class="form-control" id="address" required v-model="address">
-    </div>
-</form>
-
-<div class="d-flex justify-content-end">
-<button @click="checkout()" :disabled="!loading" class="btn btn-primary ms_checkout">Vai al checkout</button>
-</div>
-<span class="text-danger" v-if="this.errorMessage !== ''" >{{ errorMessage }}</span>
-
-</div>
-
-</div>
-
-<div :class="show ? 'd-block' : 'd-none'" class="ms_absolute">
-    
-    <div id="braintree-drop-in-div" >
-
-    </div>
-    <button class="btn btn-primary"
-        @click="checkBraintree()">Braintree btn
-    </button>
-
-
-</div>
+    <AppFooter />
 </template>
 
 <style lang="scss" scoped>
@@ -400,5 +406,9 @@ position: relative;
 position: absolute;
 top: 50%;
 transform: translate(0, -50%);
+}
+
+.emptyCart {
+    height: 60vh;
 }
 </style>
