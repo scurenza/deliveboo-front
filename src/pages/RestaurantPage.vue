@@ -167,7 +167,7 @@ AppFooter,
 #my-container {
   
   position: absolute;
-  top: 70px;
+  top: 50px;
   left: 0;
   width: 100%;
   height: 20vh;

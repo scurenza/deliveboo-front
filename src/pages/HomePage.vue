@@ -154,7 +154,7 @@ export default {
     </div>
   </div>
 
-  <div class="container mt-5 py-3">
+  <div class="container py-3">
 
     <div v-if="restaurants.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 mt-4 gy-5">
       <div class="col" v-for="restaurant in restaurants">
