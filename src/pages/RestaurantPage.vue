@@ -104,34 +104,40 @@ AppFooter,
       </li>
     </ul>
   </div> -->
-
-  <div id="my-container" class="container">
+  <div id="my-container">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#FCA311" fill-opacity="1" d="M0,256L48,218.7C96,181,192,107,288,106.7C384,107,480,181,576,202.7C672,224,768,192,864,149.3C960,107,1056,53,1152,48C1248,43,1344,85,1392,106.7L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path></svg>
+  </div>
     
-      <h1 class="text-center">{{ restaurant.name }}</h1>
-      <h5 class="text-center mb-4">P. IVA: {{ restaurant.VAT }}</h5>
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 gy-3">
-        <div v-for="product in products" class="col">
-            <div class="card" >
-              <div class="img-container">
-                <img v-if="product.img" :src="` http://127.0.0.1:8000/storage/${product.img} `" class="card-img-top" alt="...">
-                <img v-else src="../img/no-img.webp" class="card-img-top" alt="">
+    <div class="container">
+      
+        <h1 class="my-title my-4 text-center">
+          <span class="my-title-span">{{ restaurant.name }}</span></h1>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 gy-3">
+          <div v-for="product in products" class="col">
+              <div class="card" >
+                <div class="img-container">
+                  <img v-if="product.img" :src="` http://127.0.0.1:8000/storage/${product.img} `" class="card-img-top" alt="...">
+                  <img v-else src="../img/no-img.webp" class="card-img-top" alt="">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-end">
+                  <h5 class="card-title">{{product.name}}</h5>
+                  <p class="card-text text-secondary">Ingredienti: {{ product.description }}</p>
+                  <p class="card-text">Prezzo: {{ product.price }}€</p>
+                  <button @click="productControl(product)"  class="btn my-btn">Aggiungi al carrello</button>
+                </div>
               </div>
-              <div class="card-body d-flex flex-column justify-content-end">
-                <h5 class="card-title">{{product.name}}</h5>
-                <p class="card-text text-secondary">Ingredienti: {{ product.description }}</p>
-                <p class="card-text">Prezzo: {{ product.price }}€</p>
-                <button @click="productControl(product)"  class="btn my-btn">Aggiungi al carrello</button>
-              </div>
-            </div>
+          </div>
+        </div>
+        <!-- MODAL -->
+      <div :class="{ 'd-none' : !showModal, 'd-block' : showModal }" id="rest-modal-container">
+        <div id="customModal">
+          <p class="text-secondary">Puoi acquistare solo da un ristorante alla volta, aggiungendo questo prodotto verranno sostituiti i prodotti precedenti, vuoi procedere?</p>
+          <button @click="replaceProducts()" class="btn btn-primary">Procedi</button>
+          <button @click="closeModal()" class="btn btn-secondary ms-2">Annulla</button>
         </div>
       </div>
-    <!-- MODAL -->
-      <div :class="{ 'd-none' : !showModal, 'd-block' : showModal }" id="customModal">
-        <p class="text-secondary">Puoi acquistare solo da un ristorante alla volta, aggiungendo questo prodotto verranno sostituiti i prodotti precedenti, vuoi procedere?</p>
-        <button @click="replaceProducts()" class="btn btn-primary">Procedi</button>
-        <button @click="closeModal()" class="btn btn-secondary ms-2">Annulla</button>
       </div>
-  </div>
+  
 
 
 
@@ -145,6 +151,7 @@ AppFooter,
 
 .container {
   position: relative;
+  margin-top: 125px;
   #customModal {
     padding: 2rem;
     border-radius: 20px;
@@ -158,7 +165,12 @@ AppFooter,
 }
 
 #my-container {
-  margin-top:75px;
+  
+  position: absolute;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  height: 20vh;
   
 }
 
@@ -187,4 +199,30 @@ AppFooter,
 .btn {
   z-index: 6;
 }
+
+.my-title {
+  margin: 1rem 0;
+  padding: 2rem 0;
+  color: $main-bg;
+  z-index: 2;
+  position: relative;
+  
+  &-span {
+    padding: 1rem 2rem ;
+    background-color: $secondary-color;
+    border-radius: 40px;
+  }
+}
+.my-page-wrapper {
+  position: relative;
+}
+
+#rest-modal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
 </style>
