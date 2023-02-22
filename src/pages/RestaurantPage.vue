@@ -114,7 +114,7 @@ AppFooter,
           <span class="my-title-span">{{ restaurant.name }}</span></h1>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 gy-3">
           <div v-for="product in products" class="col">
-              <div class="card" >
+              <div  class="card" >
                 <div class="img-container">
                   <img v-if="product.img" :src="` http://127.0.0.1:8000/storage/${product.img} `" class="card-img-top" alt="...">
                   <img v-else src="../img/no-img.webp" class="card-img-top" alt="">
@@ -155,7 +155,7 @@ AppFooter,
   #customModal {
     padding: 2rem;
     border-radius: 20px;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
