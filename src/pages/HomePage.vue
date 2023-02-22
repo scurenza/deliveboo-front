@@ -160,8 +160,10 @@ export default {
 
         
         <div class="card">
-          <img v-if="restaurant.img" :src="` http://127.0.0.1:8000/storage/${restaurant.img} `" class="card-img-top" alt="">
-          <img v-else src="../img/no-img.webp" class="card-img-top" alt="">
+          <div class="img-container">
+            <img v-if="restaurant.img" :src="` http://127.0.0.1:8000/storage/${restaurant.img} `" class="card-img-top" alt="">
+            <img v-else src="../img/no-img.webp" class="card-img-top" alt="">
+          </div>
           <div class="card-body d-flex flex-column justify-content-end">
             <h5 class="card-title text-center">{{ restaurant.name }}</h5>
             <p class="card-text d-flex justify-content-center ">
@@ -283,6 +285,17 @@ li::not(#no-pointer){
 
 .btn.my-btn-chevron:hover {
   background-color: rgba(252, 162, 17, 0.679);
+}
+
+.img-container {
+  width: 100%;
+  height: 200px;
+}
+
+.card-img-top {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
 }
 
 </style>

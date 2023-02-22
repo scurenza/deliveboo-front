@@ -166,7 +166,7 @@ AppFooter,
 }
 
 .card {
-  
+  height: 100%;
  .text-secondary{
   font-size: .8rem;
   }
