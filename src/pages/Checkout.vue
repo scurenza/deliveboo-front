@@ -11,11 +11,18 @@ export default {
         return {
             store,
             loading: true,
-            name: '',
-            last_name: '',
-            email: '',
-            phone_number: '',
-            address: '',
+            userData: {
+                name: '',
+                last_name: '',
+                email: '',
+                phone_number: '',
+                address: '',
+            }, 
+            // name: '',
+            // last_name: '',
+            // email: '',
+            // phone_number: '',
+            // address: '',
             show: false,
             braintreeInstance: null,
             errorEmail: false,
@@ -124,11 +131,11 @@ export default {
                                     console.log({bodyPost});
                                     let date = moment().format('YYYY-MM-DD HH-mm-ss')
                                     const bodyRequest = {
-                                        name: this.name,
-                                        last_name: this.last_name,
-                                        email: this.email,
-                                        phone_number: this.phone_number,
-                                        address: this.address,
+                                        name: this.userData.name,
+                                        last_name: this.userData.last_name,
+                                        email: this.userData.email,
+                                        phone_number: this.userData.phone_number,
+                                        address: this.userData.address,
                                         amount: this.getTotal,
                                         success: true,
                                         date: date,
@@ -136,16 +143,25 @@ export default {
                                     }
                                         console.log(bodyRequest);
                                         axios.post('http://127.0.0.1:8000/api/order/', bodyRequest).then(resp => {
+                                        
                                         console.log(resp.data.success);
                                         this.show = false;
                                         
                                         this.store.shoppingCart = [];
                                         localStorage.setItem('carrello', JSON.stringify([]));
-                                        this.name = '';
-                                        this.last_name = '';
-                                        this.email = '';
-                                        this.phone_number = '';
-                                        this.address = '';
+                                        this.userData = {
+                                            name : '',
+                                            last_name : '',
+                                            email : '',
+                                            phone_number : '',
+                                            address : '',
+                                        }
+                                        // this.userData.name = '';
+                                        // this.userData.last_name = '';
+                                        // this.userData.email = '';
+                                        // this.userData.phone_number = '';
+                                        // this.userData.address = '';
+                                        
                                         })
                                     }
                                 })
@@ -244,41 +260,41 @@ export default {
         <form>
             <div class="mb-3">
                 <label for="name" class="form-label">Nome*</label>
-                <input type="text" @keyup="checkInput(name)" :class="name.length>0 && !checkInput(name) ? 'is-invalid' : ''" class="form-control" id="name" required v-model="name">
-                <div v-if="name.length>0 && !checkInput(name)" class="invalid-feedback">
+                <input type="text" @keyup="checkInput(userData.name)" :class="userData.name.length>0 && !checkInput(userData.name) ? 'is-invalid' : ''" class="form-control" id="name" required v-model="userData.name">
+                <div v-if="userData.name.length>0 && !checkInput(userData.name)" class="invalid-feedback">
                     <span>E' possibile inserire solamente lettere</span>
                 </div>
 
             </div>
             <div class="mb-3">  
                 <label for="last_name" class="form-label">Cognome*</label>
-                <input type="text" @keyup="checkInput(last_name)" :class="last_name.length>0 && !checkInput(last_name) ? 'is-invalid' : ''" class="form-control" id="last_name" required v-model="last_name">
-                <div v-if="last_name.length>0 && !checkInput(last_name)" class="invalid-feedback">
+                <input type="text" @keyup="checkInput(userData.last_name)" :class="userData.last_name.length>0 && !checkInput(userData.last_name) ? 'is-invalid' : ''" class="form-control" id="last_name" required v-model="userData.last_name">
+                <div v-if="userData.last_name.length>0 && !checkInput(userData.last_name)" class="invalid-feedback">
                     <span>E' possibile inserire solamente lettere</span>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email*</label>
-                <input type="email" @blur="checkMail(email)" :class="email.length>0 && errorEmail ? 'is-invalid' : ''" class="form-control" id="email" required v-model="email">
-                <div v-if="email.length>0 && errorEmail" class="invalid-feedback">
+                <input type="email" @blur="checkMail(userData.email)" :class="userData.email.length>0 && errorEmail ? 'is-invalid' : ''" class="form-control" id="email" required v-model="userData.email">
+                <div v-if="userData.email.length>0 && errorEmail" class="invalid-feedback">
                     <span>Inserisci una email valida</span>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="phone_number" class="form-label">Numero*</label>
-                <input type="number" @keyup="checkNumber(phone_number)" :class="phone_number.toString().length>0 && !checkNumber(phone_number) ? 'is-invalid' : ''" class="form-control" id="phone_number" required v-model="phone_number">
-                <div v-if="phone_number.toString().length>0 && !checkNumber(phone_number)" class="invalid-feedback">
+                <input type="number" @keyup="checkNumber(userData.phone_number)" :class="userData.phone_number.toString().length>0 && !checkNumber(userData.phone_number) ? 'is-invalid' : ''" class="form-control" id="phone_number" required v-model="userData.phone_number">
+                <div v-if="userData.phone_number.toString().length>0 && !checkNumber(userData.phone_number)" class="invalid-feedback">
                     <span>Inserisci un numero di telefono valido</span>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Address*</label>
-                <input type="text" class="form-control" id="address" required v-model="address">
+                <input type="text" class="form-control" id="address" required v-model="userData.address">
             </div>
         </form>
         <span class="text-danger" v-if="this.errorMessage !== ''" >{{ errorMessage }}</span>
         <div class="d-flex justify-content-end">
-        <button @click="checkout()" :disabled="!loading" class="btn my-btn mb-4 ms_checkout">Vai al checkout</button>
+        <button @click="checkout()" class="btn my-btn mb-4 ms_checkout">Vai al checkout</button>
         </div>
     
 
@@ -287,7 +303,6 @@ export default {
         </div>
 
         <div :class="show ? 'd-block' : 'd-none'" class="ms_absolute">
-
             <div class="modal-container p-2 bg-light">
                 <div id="braintree-drop-in-div"></div>
 

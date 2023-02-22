@@ -153,6 +153,7 @@ AppFooter,
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
+    z-index: 999;
   }
 }
 

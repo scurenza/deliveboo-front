@@ -155,7 +155,8 @@ export default {
   </div>
 
   <div class="container mt-5 py-3">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 mt-4 gy-5">
+
+    <div v-if="restaurants.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 mt-4 gy-5">
       <div class="col" v-for="restaurant in restaurants">
 
         
@@ -175,6 +176,9 @@ export default {
           </div>
         </div>
       </div>
+    </div>
+    <div v-else>
+      <h3 class="text-center">Non ci sono ristoranti con queste tipologie</h3>
     </div>
     <nav class="navigation d-flex justify-content-end py-3">
       <a v-if="this.currentPage !== 1"  class="btn my-btn-chevron me-3" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage - 1)"><i class="fa-solid fa-chevron-left"></i></a>
