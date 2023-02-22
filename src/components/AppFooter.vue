@@ -3,20 +3,9 @@ export default {
     name: "AppFooter",
     data() {
         return {
-            map: [
-                {
-                    name: "Scopri Deliveboo",
-                    items: ["Investitori", "Chi siamo", "Ristoranti", "Altro", "Pressroom", "Diventa partner", "Programmazione"]
-                },
-                {
-                    name: "Note Legali",
-                    items: ["Termini & Condizioni", "Informativa sulla Privacy"]
-                },
-                {
-                    name: "Aiuto",
-                    items: ["Contatti", "FAQ", "Tipi di cucina",]
-                },
-            ],
+                    About: ["Investitori", "Chi siamo", "Ristoranti", "Altro", "Pressroom", "Diventa partner", "Programmazione"],
+                    Legal: ["Termini & Condizioni", "Informativa sulla Privacy"],
+                    Help: ["Contatti", "FAQ", "Tipi di cucina",],
         }
     }
 }
@@ -25,14 +14,26 @@ export default {
 <template>
     <footer>
             <div class="container">
-                    <div class="list-contents">                   
-                        <div v-for="(list) in map" class="list">
-                            <h2>{{list.name}}</h2>
+                    <div class="list-contents row"> 
+                        <div class="col-6 col-sm-3">                
+                            <h2>Scopri Deliveboo</h2>
                             <ul>
-                                <li v-for="(items) in list.items"><a href="">{{items}}</a></li>
+                                <li v-for="(item) in About"><a href="">{{item}}</a></li>
                             </ul>
                         </div>
-                        <div class="social">
+                        <div class="col-6 col-sm-3">
+                            <h2>Note Legali</h2>
+                            <ul>
+                                <li v-for="(item) in Legal"><a href="">{{item}}</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6 col-sm-3"> 
+                            <h2>Aiuto</h2>
+                            <ul>
+                                <li v-for="(item) in Help"><a href="">{{item}}</a></li>
+                            </ul>
+                        </div>
+                        <div class="social col-6 col-sm-3 ">
                             <h2>Social</h2>
                             <div class="group">
                                 <a href=""><i class="fa-brands fa-facebook"></i></a>
@@ -41,7 +42,7 @@ export default {
                             </div>
                         </div>
                     </div>
-            </div>
+                </div>
     </footer>    
 </template>
 
@@ -61,10 +62,6 @@ export default {
         padding:0;
     }
     .list-contents {
-        height: 270px;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
         padding: 2rem 0;
         li {
             list-style-type: none;

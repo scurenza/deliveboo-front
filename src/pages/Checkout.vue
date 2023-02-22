@@ -219,8 +219,8 @@ export default {
             <div class="ms-price d-flex align-items-center justify-content-between">
                 <div class="d-flex">
         
-                    <button @click="incrementQuantity(product.id)" class="btn my-btn  ms-4 me-2">+</button>
-                    <button @click="decrementQuantity(product.id)" class="btn my-btn ">-</button>
+                    <button @click="decrementQuantity(product.id)" class="btn my-btn ms-4 me-2">-</button>
+                    <button @click="incrementQuantity(product.id)" class="btn my-btn ">+</button>
                 </div>
                 <!-- <button id="delete-button" @click="deleteProductFromCart(product.id)" class="btn btn-danger">Elimina</button> -->
         

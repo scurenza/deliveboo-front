@@ -24,7 +24,10 @@ export default{
         <div class="container">
 
             <a class="navbar-brand text-white brand" href="/">
-                <h4>Deliveboo</h4>
+                <div id="logo" class="d-flex text-center">
+                    <img src="../img/3.png" alt="">
+                    <h4>eliveboo</h4>
+                </div>               
             </a>
             <div id="navbarNav">
                 <ul class="navbar-nav d-flex flex-row">
@@ -75,7 +78,10 @@ export default{
     color: $text-primary;
     
 }
-
+img {
+        width:35px;
+        height: 35px;
+    }
 .btn {
     background-color: $main-bg;
 
@@ -96,5 +102,10 @@ export default{
 #push {
     font-size: .6rem;
 }
-
+// MEDIA QUERY
+@media screen and (max-width: 600px)  {
+    #no-pointer {
+        display:none
+    }
+}
 </style>
