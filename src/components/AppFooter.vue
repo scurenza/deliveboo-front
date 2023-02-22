@@ -53,6 +53,7 @@ export default {
         color: white;
         h2 {
             font-size: 1.4rem;
+            color: $main-bg;
         }
         li {
             font-size: .8rem;

@@ -109,10 +109,13 @@ AppFooter,
     
       <h1 class="text-center">{{ restaurant.name }}</h1>
       <h5 class="text-center mb-4">P. IVA: {{ restaurant.VAT }}</h5>
-      <div class="row row-cols-3">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 gy-3">
         <div v-for="product in products" class="col">
             <div class="card" >
-              <img :src="` http://127.0.0.1:8000/storage/${product.img} `" class="card-img-top" alt="...">
+              <div class="img-container">
+                <img v-if="product.img" :src="` http://127.0.0.1:8000/storage/${product.img} `" class="card-img-top" alt="...">
+                <img v-else src="../img/no-img.webp" class="card-img-top" alt="">
+              </div>
               <div class="card-body d-flex flex-column justify-content-end">
                 <h5 class="card-title">{{product.name}}</h5>
                 <p class="card-text text-secondary">Ingredienti: {{ product.description }}</p>
@@ -154,7 +157,7 @@ AppFooter,
 }
 
 #my-container {
-  margin-top:55px;
+  margin-top:75px;
   
 }
 
@@ -163,9 +166,24 @@ AppFooter,
 }
 
 .card {
-  min-height: 361px;
+  
  .text-secondary{
   font-size: .8rem;
   }
+}
+
+.img-container {
+  width: 100%;
+  height: 200px;
+}
+
+.card-img-top {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.btn {
+  z-index: 6;
 }
 </style>

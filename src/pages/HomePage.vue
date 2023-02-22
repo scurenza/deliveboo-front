@@ -139,25 +139,33 @@ export default {
   <!-- types -->
   <div class="bg-types">
     <div class="container">
-      <ul class="list-group list-group-horizontal justify-content-center">
+      <!-- <ul class="list-group justify-content-center">
         <li @click="HandleCategoryClick(singletype.name, singletype.id)" :class="singletype.active ? 'my-bg' : ''" class="my-list-group-item my-4 text-center" v-for="singletype in types" :key="singletype.id">
           {{ singletype.name }}
         </li>
-      </ul>
+      </ul> -->
+      <div class="row row-cols-lg-4 row-cols-sm-2">
+        <div class="col d-flex justify-content-center" v-for="singletype in types" :key="singletype.id">
+          <div @click="HandleCategoryClick(singletype.name, singletype.id)"  :class="singletype.active ? 'my-bg' : ''" class="my-btn-type my-3 text-center text-light" >
+            {{ singletype.name }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="container mt-5 py-3">
-    <div class="row row-cols-1 row-cols-md-2 row-cols-sm-3 mt-4 gy-5">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 mt-4 gy-5">
       <div class="col" v-for="restaurant in restaurants">
 
         
-        <div class="card" >
-          <img :src="` http://127.0.0.1:8000/storage/${restaurant.img} `" class="card-img-top" alt="">
+        <div class="card">
+          <img v-if="restaurant.img" :src="` http://127.0.0.1:8000/storage/${restaurant.img} `" class="card-img-top" alt="">
+          <img v-else src="../img/no-img.webp" class="card-img-top" alt="">
           <div class="card-body d-flex flex-column justify-content-end">
-            <h5 class="card-title">{{ restaurant.name }}</h5>
-            <p class="card-text d-flex justify-content-between">
-              <span class="rounded-pill my-type" v-for="singleType in restaurant.types">
+            <h5 class="card-title text-center">{{ restaurant.name }}</h5>
+            <p class="card-text d-flex justify-content-center ">
+              <span class="rounded-pill my-type mx-1" v-for="singleType in restaurant.types">
                 {{ singleType.name }} <br>
               </span>
             </p>
@@ -167,8 +175,8 @@ export default {
       </div>
     </div>
     <nav class="navigation d-flex justify-content-end py-3">
-      <a v-if="this.currentPage !== 1" class="btn btn-success me-3" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage - 1)"><i class="fa-solid fa-chevron-left"></i></a>
-      <a v-if="this.lastPage !== null && this.currentPage * 3 < this.totalUsers" class="btn btn-success" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage + 1)"><i class="fa-solid fa-chevron-right"></i></a>
+      <a v-if="this.currentPage !== 1"  class="btn my-btn-chevron me-3" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage - 1)"><i class="fa-solid fa-chevron-left"></i></a>
+      <a v-if="this.lastPage !== null && this.currentPage * 3 < this.totalUsers" class="btn my-btn-chevron" disabled="loadingReastaurant" @click.prevent="getRestaurants(currentPage + 1)"><i class="fa-solid fa-chevron-right"></i></a>
     </nav>
   </div>
   <AppFooter />
@@ -199,14 +207,14 @@ li::not(#no-pointer){
   background-color: $secondary-color;
 }
 
-.my-list-group-item {
+.my-btn-type {
  --color: white;
  font-family: inherit;
  display: inline-block;
  width: 8em;
  height: 2.6em;
  line-height: 2.5em;
- margin: 20px;
+ margin: 10px;
  position: relative;
  overflow: hidden;
  border: 2px solid var(--color);
@@ -216,9 +224,10 @@ li::not(#no-pointer){
  border-radius: 6px;
  font-weight: 500;
  color: var(--color);
+ cursor: pointer;
 }
 
-.my-list-group-item:before {
+.my-btn-type:before {
  content: "";
  position: absolute;
  z-index: -1;
@@ -228,22 +237,22 @@ li::not(#no-pointer){
  border-radius: 50%;
 }
 
-.my-list-group-item:hover {
+.my-btn-type:hover {
  color: #fff;
 }
 
-.my-list-group-item:before {
+.my-btn-type:before {
  top: 100%;
  left: 100%;
  transition: all .7s;
 }
 
-.my-list-group-item:hover:before {
+.my-btn-type:hover:before {
  top: -30px;
  left: -30px;
 }
 
-.my-list-group-item:active:before {
+.my-btn-type:active:before {
  background: $main-bg;
  transition: background 0s;
 }
@@ -266,4 +275,14 @@ li::not(#no-pointer){
   background-color: $main-bg;
   padding:.1rem .3rem;
 }
+
+.btn.my-btn-chevron {
+  background-color: $main-bg;
+  z-index: 5;
+}
+
+.btn.my-btn-chevron:hover {
+  background-color: rgba(252, 162, 17, 0.679);
+}
+
 </style>

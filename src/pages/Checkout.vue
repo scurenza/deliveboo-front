@@ -189,7 +189,7 @@ export default {
 
 
         <h1>Carrello</h1>
-        <div v-if="store.shoppingCart.length === 0" class="container emptyCart">
+        <div v-if="store.shoppingCart.length === 0" class="mt-5 container emptyCart">
             <h1 class="text-center">
                 Il tuo Carrello è vuoto
             </h1>
@@ -197,7 +197,7 @@ export default {
         <table class="table table-borderless" v-else>
         <thead>
         <tr>
-            <th scope="col">Immagine</th>
+            <th class="img-col" scope="col">Immagine</th>
             <th scope="col">Nome</th>
             <th scope="col">Prezzo</th>
             <th scope="col">Quantità</th>
@@ -208,25 +208,26 @@ export default {
 
         <tr class="border-bottom" v-for="product in store.shoppingCart">
 
-        <td scope="row">
-            <img :src="` http://127.0.0.1:8000/storage/${product.img} `" alt="">
+        <td class="img-col" scope="row">
+            <img v-if="product.img" :src="` http://127.0.0.1:8000/storage/${product.img} `" alt="">
+            <img v-else src="../img/no-img.webp" alt="">
         </td>
         <!-- class=" d-flex align-items-center justify-content-between" -->
         <td class="td-ms-price"><span class="ms-price">{{ product.name }}</span></td>
         <td class="td-ms-price"><span class="ms-price">{{ product.price }} €</span></td>
         <td class="td-ms-price"><span class="ms-price">{{ product.quantity }}</span></td>
         <td class="td-ms-price">
-            <div class="ms-price d-flex align-items-center justify-content-between">
+            <div class="ms-price d-flex align-items-center justify-content-end">
                 <div class="d-flex">
-        
-                    <button @click="decrementQuantity(product.id)" class="btn my-btn ms-4 me-2">-</button>
-                    <button @click="incrementQuantity(product.id)" class="btn my-btn ">+</button>
+                    
+                    <button @click="decrementQuantity(product.id)" class="btn my-btn-symbols me-2">-</button>
+                    <button @click="incrementQuantity(product.id)" class="btn my-btn-symbols me-4">+</button>
+                    <button id="delete-button" class="noselect" @click="deleteProductFromCart(product.id)"><span class="text">Elimina</span><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
                 </div>
                 <!-- <button id="delete-button" @click="deleteProductFromCart(product.id)" class="btn btn-danger">Elimina</button> -->
-        
+                <button class="btn btn-danger my-delete" @click="deleteProductFromCart(product.id)">X</button>
                 <!-- Animazione bottone elimina nel carrello -->
                 <div>
-                    <button id="delete-button" class="noselect" @click="deleteProductFromCart(product.id)"><span class="text">Elimina</span><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></button>
                     <!-- Animazione bottone elimina nel carrello -->
                 </div>
             </div>
@@ -234,13 +235,10 @@ export default {
                 
 
         </tr>
-        <tr>
-            <td colspan="4"></td>
-            <td class="text-end mt-2" ><h4> Totale: {{ getTotal }} € </h4></td>
-        </tr>
-        </tbody>
-        </table>
+    </tbody>
+</table>
 
+        <div class="text-end mt-2 me-1" v-if="store.shoppingCart.length !== 0" ><h4> Totale: {{ getTotal }} € </h4></div>
         <!-- form -->
         <div v-if="store.shoppingCart.length>0" class="container">
         <form>
@@ -280,7 +278,7 @@ export default {
         </form>
         <span class="text-danger" v-if="this.errorMessage !== ''" >{{ errorMessage }}</span>
         <div class="d-flex justify-content-end">
-        <button @click="checkout()" :disabled="!loading" class="btn btn-primary mb-4 ms_checkout">Vai al checkout</button>
+        <button @click="checkout()" :disabled="!loading" class="btn my-btn mb-4 ms_checkout">Vai al checkout</button>
         </div>
     
 
@@ -290,7 +288,7 @@ export default {
 
         <div :class="show ? 'd-block' : 'd-none'" class="ms_absolute">
 
-            <div class="modal-container px-2 bg-light">
+            <div class="modal-container p-2 bg-light">
                 <div id="braintree-drop-in-div"></div>
 
                 <div class="d-flex justify-content-center">
@@ -307,8 +305,9 @@ export default {
 
 <style lang="scss" scoped>
 @use "../style/general.scss" as *;
+@use "../style/partials/variables" as *;
 img {
-width: 150px;
+width: 100px;
 }
 .ms_checkout:disabled {
 opacity: 0.5;
@@ -356,6 +355,7 @@ align-items: center;
     max-width: 700px;
     border-radius: 20px;
     
+    
 }
 
 // Bottone elimina nel carrello
@@ -371,6 +371,7 @@ border: none;
 border-radius: 5px;
 box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
 background: #e62222;
+margin-left: 1.5rem;
 }
 
 #delete-button, #delete-button span {
@@ -421,9 +422,17 @@ outline: none;
 transform: scale(0.8);
 }
 
-.my-btn{
+.my-btn-symbols{
 height: 38px;
 width: 38px;
+
+    background-color: $secondary-color;
+    color: white;
+  
+    &:hover {
+      background-color: #14213de1;
+      color: white;
+    }
 }
 
 .td-ms-price{
@@ -439,4 +448,28 @@ transform: translate(0, -50%);
 .emptyCart {
     min-height: 80vh;
 }
+
+.my-delete {
+    display: none;
+}
+
+// MEDIA QUERY
+@media screen and (max-width: 770px) {
+    #delete-button {
+        display: none;
+    }
+    .my-delete {
+        display: block;
+    }
+
+    .img-col {
+        display: none;
+    }
+
+    .modal-container {
+        width: 100%;
+    }
+}
+
+
 </style>
